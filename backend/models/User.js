@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+
 const sequelize = require('../database');
 
 const User = sequelize.define('User', {
@@ -14,9 +15,14 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('USER', 'ADMIN'),
     defaultValue: 'USER',
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   }
 }, {
-    timestamps: true
+    timestamps: true,
+    tableName: 'users',
 });
 
 module.exports = User;

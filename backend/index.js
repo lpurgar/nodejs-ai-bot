@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+
 const sequelize = require('./database');
+const authRoutes = require('./routes/auth.route');
+const conversationRoutes = require('./routes/conversation.route');
+const messageRoutes = require('./routes/message.route');
 
 require('dotenv').config();
 
@@ -11,16 +15,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-const authRoutes = require('./routes/auth');
+// Routes
 app.use('/auth', authRoutes);
+app.use('/conversation', conversationRoutes);
+app.use('/message', messageRoutes);
 
-app.get('/', (req, res) => {
-  res.send('🚀 SQLite + Sequelize API running');
-});
-
-// DB connection and sync
 async function start() {
   try {
+    sequelize.sync().then(() => { console.log('✅ Database synced.') })
+
     await sequelize.authenticate();
     console.log('✅ Connected to SQLite database.');
 
