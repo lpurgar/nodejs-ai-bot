@@ -7,7 +7,13 @@ exports.getAllConversations = async (req, res) => {
       where: { userId: req.user.id },
       order: [['createdAt', 'DESC']],
     });
-    res.json(conversations);
+    if (conversations.length === 0) {
+      res.status(200).json({ 
+        data: [], 
+        message: `No ${Conversation.name}s found` 
+      })
+    }
+    res.status(200).json({data: conversations});
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -47,15 +53,16 @@ exports.getConversation = async (req, res) => {
 // Delete conversation
 exports.deleteConversation = async (req, res) => {
   try {
+    const { params, user } = req;
     const deleted = await Conversation.destroy({
-      where: { id: req.params.id, userId: req.user.id },
+      where: { id: params.id, userId: user.id },
     });
 
     if (!deleted) {
       return res.status(404).json({ message: 'Conversation not found or not authorized' });
     }
 
-    res.json({ message: 'Conversation deleted' });
+    res.json({ message: `Conversation with id ${params.id} deleted` });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
