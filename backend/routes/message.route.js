@@ -8,7 +8,7 @@ const {
 
 router.use(authenticate);
 
-router.post('/', sendMessage); // POST /api/messages
-router.get('/:conversationId', getMessages); // GET /api/messages/:conversationId
+router.post('/', sendMessage);
+router.get('/:conversationId', getMessages);
 
 module.exports = router;
