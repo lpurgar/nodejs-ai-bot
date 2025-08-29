@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Chat</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>AI Chat</h1>
-    <div id="chatBox"></div>
-    <form id="chatForm">
-      <input type="text" id="userMessage" placeholder="Type your message..." required />
-      <button type="submit">Send</button>
-    </form>
-    <button onclick="logout()">Logout</button>
-  </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AI Chat</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>AI Chat</h1>
+                <button id="userManagementBtn" style="display: none">
+                    User Management
+                </button>
+            </div>
+            <div id="chatBox"></div>
+            <form id="chatForm">
+                <input
+                    type="text"
+                    id="userMessage"
+                    placeholder="Type your message..."
+                    required
+                />
+                <button type="submit">Send</button>
+            </form>
+            <div id="adminActions" style="margin-top: 1rem">
+                <button onclick="logout()">Logout</button>
+            </div>
+            <!-- <button onclick="logout()">Logout</button> -->
+        </div>
 
-  <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>
