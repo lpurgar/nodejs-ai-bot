@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const { User } = require("../models");
+const { Log } = require("../models");
 
 exports.register = async (req, res) => {
     const { firstName, lastName, email, password, role } = req.body;
@@ -26,6 +27,12 @@ exports.register = async (req, res) => {
         email,
         password: hashedPassword,
         role: role || "USER",
+    });
+
+    await Log.create({
+        action: "Create",
+        userId: newUser.id,
+        table: User.tableName,
     });
 
     const jsonResponse = {
@@ -59,6 +66,12 @@ exports.login = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRATION || "1h" }
     );
+
+    await Log.create({
+        action: "Login",
+        userId: user.id,
+        table: User.tableName,
+    });
 
     res.json({ message: "Logged in", token, role: user.role });
 };

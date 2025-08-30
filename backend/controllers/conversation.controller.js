@@ -1,7 +1,6 @@
-const { Conversation, Message } = require("../models");
+const { Conversation, Message, Log } = require("../models");
 
-// Get all conversations for logged-in user
-exports.getAllConversations = async (req, res) => {
+exports.getConversations = async (req, res) => {
     try {
         const conversations = await Conversation.findAll({
             where: { userId: req.user.id },
@@ -20,7 +19,6 @@ exports.getAllConversations = async (req, res) => {
     }
 };
 
-// Create new conversation
 exports.createConversation = async (req, res) => {
     try {
         const userId = parseInt(req.user.id);
@@ -29,6 +27,11 @@ exports.createConversation = async (req, res) => {
             title,
             userId,
         });
+        await Log.create({
+            action: "Create",
+            userId,
+            table: Conversation.tableName,
+        });
         res.status(201).json(conversation);
     } catch (err) {
         console.error(err);
@@ -36,7 +39,6 @@ exports.createConversation = async (req, res) => {
     }
 };
 
-// Get one conversation with messages
 exports.getConversation = async (req, res) => {
     try {
         const conversation = await Conversation.findOne({
@@ -52,7 +54,6 @@ exports.getConversation = async (req, res) => {
     }
 };
 
-// Delete conversation
 exports.deleteConversation = async (req, res) => {
     try {
         const { params, user } = req;
@@ -66,58 +67,15 @@ exports.deleteConversation = async (req, res) => {
                 .json({ message: "Conversation not found or not authorized" });
         }
 
+        await Log.create({
+            action: "Delete",
+            userId: user.id,
+            table: Conversation.tableName,
+        });
+
         res.json({ message: `Conversation with id ${params.id} deleted` });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
     }
-};
-
-// Create new conversation
-exports.createConversation = async (req, res) => {
-  try {
-    const conversation = await Conversation.create({
-      title: req.body.title || null,
-      userId: req.user.id,
-    });
-    res.status(201).json(conversation);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Get one conversation with messages
-exports.getConversation = async (req, res) => {
-  try {
-    const conversation = await Conversation.findOne({
-      where: { id: req.params.id, userId: req.user.id },
-      include: [Message],
-    });
-
-    if (!conversation) {
-      return res.status(404).json({ message: 'Conversation not found' });
-    }
-
-    res.json(conversation);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Delete conversation
-exports.deleteConversation = async (req, res) => {
-  try {
-    const { params, user } = req;
-    const deleted = await Conversation.destroy({
-      where: { id: params.id, userId: user.id },
-    });
-
-    if (!deleted) {
-      return res.status(404).json({ message: 'Conversation not found or not authorized' });
-    }
-
-    res.json({ message: `Conversation with id ${params.id} deleted` });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
 };

@@ -6,6 +6,7 @@ const authRoutes = require("./routes/auth.route");
 const userRoutes = require("./routes/user.route");
 const conversationRoutes = require("./routes/conversation.route");
 const messageRoutes = require("./routes/message.route");
+const organizationRoutes = require("./routes/organization.route");
 
 const {
     authenticate,
@@ -24,6 +25,12 @@ app.use("/auth", authRoutes);
 app.use("/user", authenticate, authorizeRole("ADMIN"), userRoutes);
 app.use("/conversation", authenticate, conversationRoutes);
 app.use("/message", authenticate, messageRoutes);
+app.use(
+    "/organization",
+    authenticate,
+    authorizeRole("ADMIN"),
+    organizationRoutes
+);
 
 async function start() {
     try {
